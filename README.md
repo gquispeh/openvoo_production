@@ -95,20 +95,40 @@ cd openvoo_production
 
 ### 3. Configurar variables
 
+Edita `.env` — es el **unico archivo donde se configuran credenciales**.
+Todos los contenedores leen de aqui automaticamente.
+
 ```bash
-# Copiar y editar el archivo de variables
-cp .env.example .env   # o editar .env directamente
 nano .env
 ```
 
-Cambiar estos valores en `.env`:
-- `POSTGRES_PASSWORD` -> una password segura
-- `ODOO_MASTER_PASSWORD` -> otra password segura
-- `ACME_EMAIL` -> tu email real (para Let's Encrypt)
+El archivo se ve asi:
 
-Luego actualizar las mismas passwords en:
-- `instances/openvoo/odoo.conf`
-- `instances/demo/odoo.conf`
+```env
+# --- Dominio ---
+DOMAIN=openvoo.com
+
+# --- PostgreSQL ---
+POSTGRES_USER=odoo
+POSTGRES_PASSWORD=CAMBIAR_password_segura_aqui    # <-- CAMBIAR
+POSTGRES_DB=postgres
+
+# --- Traefik / Let's Encrypt ---
+ACME_EMAIL=admin@openvoo.com                      # <-- tu email real
+
+# --- Odoo ---
+ODOO_MASTER_PASSWORD=CAMBIAR_master_password_aqui  # <-- CAMBIAR
+```
+
+Solo necesitas cambiar 3 valores:
+
+| Variable | Que es | Ejemplo |
+|----------|--------|---------|
+| `POSTGRES_PASSWORD` | Password de la base de datos | `K7x$mP9!wQ2nR` |
+| `ACME_EMAIL` | Email para certificados SSL | `gerardo@openvoo.com` |
+| `ODOO_MASTER_PASSWORD` | Password para gestionar BDs en Odoo | `Jf4#pL8@vN6` |
+
+No necesitas tocar ningun otro archivo. Los `odoo.conf` solo tienen config de rendimiento y rutas, las credenciales se inyectan automaticamente via Docker.
 
 ### 4. Agregar modulos Enterprise
 

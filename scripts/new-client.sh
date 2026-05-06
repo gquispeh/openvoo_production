@@ -30,25 +30,15 @@ echo ""
 # Copiar template
 cp -r "$ROOT_DIR/instances/_template" "$CLIENT_DIR"
 
-# Reemplazar placeholders
+# Reemplazar placeholder del nombre
 sed -i "s/NOMBRE_CLIENTE/$CLIENT/g" "$CLIENT_DIR/docker-compose.yml"
 sed -i "s/NOMBRE_CLIENTE/$CLIENT/g" "$CLIENT_DIR/odoo.conf"
 
-# Leer password del .env para el odoo.conf
-DB_PASS=$(grep POSTGRES_PASSWORD "$ROOT_DIR/.env" | cut -d '=' -f2)
-MASTER_PASS=$(grep ODOO_MASTER_PASSWORD "$ROOT_DIR/.env" | cut -d '=' -f2)
-sed -i "s/CAMBIAR_ESTA_PASSWORD_SEGURA/$DB_PASS/g" "$CLIENT_DIR/odoo.conf"
-sed -i "s/CAMBIAR_MASTER_PASSWORD/$MASTER_PASS/g" "$CLIENT_DIR/odoo.conf"
-
 echo "Instancia creada en: instances/$CLIENT/"
-echo ""
-echo "Archivos generados:"
-echo "  instances/$CLIENT/docker-compose.yml"
-echo "  instances/$CLIENT/odoo.conf"
-echo "  instances/$CLIENT/addons/"
 echo ""
 echo "Para levantar:"
 echo "  docker compose -f instances/$CLIENT/docker-compose.yml --env-file .env up -d"
 echo ""
-echo "IMPORTANTE: Agrega el registro DNS:"
+echo "IMPORTANTE: Si no tienes DNS wildcard (*.openvoo.com),"
+echo "agrega el registro DNS:"
 echo "  $CLIENT.openvoo.com -> IP_DE_TU_SERVIDOR"
