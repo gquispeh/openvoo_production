@@ -29,13 +29,3 @@ services:
       - openvoo_web:/var/lib/odoo/filestore
     networks:
       - openvoo_network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.openvoo.rule=Host(`openvoo.com`)"
-      - "traefik.http.routers.openvoo.entrypoints=websecure"
-      - "traefik.http.routers.openvoo.tls.certresolver=letsencrypt"
-      - "traefik.http.services.openvoo.loadbalancer.server.port=8069"
-      - "traefik.http.routers.openvoo-lp.rule=Host(`openvoo.com`) && PathPrefix(`/websocket`)"
-      - "traefik.http.routers.openvoo-lp.entrypoints=websecure"
-      - "traefik.http.routers.openvoo-lp.tls.certresolver=letsencrypt"
-      - "traefik.http.services.openvoo-lp.loadbalancer.server.port=8072"

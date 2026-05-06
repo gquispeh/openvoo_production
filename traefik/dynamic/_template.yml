@@ -1,0 +1,26 @@
+http:
+  routers:
+    NOMBRE_CLIENTE:
+      rule: "Host(`NOMBRE_CLIENTE.openvoo.com`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: NOMBRE_CLIENTE
+    NOMBRE_CLIENTE-lp:
+      rule: "Host(`NOMBRE_CLIENTE.openvoo.com`) && PathPrefix(`/websocket`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: NOMBRE_CLIENTE-lp
+
+  services:
+    NOMBRE_CLIENTE:
+      loadBalancer:
+        servers:
+          - url: "http://NOMBRE_CLIENTE:8069"
+    NOMBRE_CLIENTE-lp:
+      loadBalancer:
+        servers:
+          - url: "http://NOMBRE_CLIENTE:8072"

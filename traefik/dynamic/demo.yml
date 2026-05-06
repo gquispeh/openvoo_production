@@ -1,0 +1,26 @@
+http:
+  routers:
+    demo:
+      rule: "Host(`demo.openvoo.com`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: demo
+    demo-lp:
+      rule: "Host(`demo.openvoo.com`) && PathPrefix(`/websocket`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: demo-lp
+
+  services:
+    demo:
+      loadBalancer:
+        servers:
+          - url: "http://demo:8069"
+    demo-lp:
+      loadBalancer:
+        servers:
+          - url: "http://demo:8072"

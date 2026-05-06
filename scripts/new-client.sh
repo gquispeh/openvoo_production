@@ -27,18 +27,25 @@ echo "Creando instancia: $CLIENT"
 echo "Dominio: $CLIENT.openvoo.com"
 echo ""
 
-# Copiar template
+# Copiar template de instancia
 cp -r "$ROOT_DIR/instances/_template" "$CLIENT_DIR"
-
-# Reemplazar placeholder del nombre
 sed -i "s/NOMBRE_CLIENTE/$CLIENT/g" "$CLIENT_DIR/docker-compose.yml"
 sed -i "s/NOMBRE_CLIENTE/$CLIENT/g" "$CLIENT_DIR/odoo.conf"
 
-echo "Instancia creada en: instances/$CLIENT/"
+# Crear ruta en Traefik
+cp "$ROOT_DIR/traefik/dynamic/_template.yml" "$ROOT_DIR/traefik/dynamic/$CLIENT.yml"
+sed -i "s/NOMBRE_CLIENTE/$CLIENT/g" "$ROOT_DIR/traefik/dynamic/$CLIENT.yml"
+
+echo "Instancia creada."
+echo ""
+echo "Archivos generados:"
+echo "  instances/$CLIENT/docker-compose.yml"
+echo "  instances/$CLIENT/odoo.conf"
+echo "  instances/$CLIENT/addons/"
+echo "  traefik/dynamic/$CLIENT.yml"
 echo ""
 echo "Para levantar:"
 echo "  docker compose -f instances/$CLIENT/docker-compose.yml --env-file .env up -d"
 echo ""
-echo "IMPORTANTE: Si no tienes DNS wildcard (*.openvoo.com),"
-echo "agrega el registro DNS:"
-echo "  $CLIENT.openvoo.com -> IP_DE_TU_SERVIDOR"
+echo "Traefik detecta la ruta automaticamente (watch: true)."
+echo "Si no tienes DNS wildcard, agrega: $CLIENT.openvoo.com -> IP_DEL_SERVIDOR"

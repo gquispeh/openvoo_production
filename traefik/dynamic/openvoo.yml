@@ -1,0 +1,26 @@
+http:
+  routers:
+    openvoo:
+      rule: "Host(`openvoo.com`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: openvoo
+    openvoo-lp:
+      rule: "Host(`openvoo.com`) && PathPrefix(`/websocket`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: openvoo-lp
+
+  services:
+    openvoo:
+      loadBalancer:
+        servers:
+          - url: "http://openvoo:8069"
+    openvoo-lp:
+      loadBalancer:
+        servers:
+          - url: "http://openvoo:8072"
