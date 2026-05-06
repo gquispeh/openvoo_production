@@ -1,0 +1,36 @@
+# ============================================
+# Instancia: Demo
+# Dominio: demo.openvoo.com
+# ============================================
+
+networks:
+  openvoo_network:
+    external: true
+
+volumes:
+  demo_data:
+  demo_web:
+
+services:
+  demo:
+    image: odoo:19.0
+    container_name: demo
+    restart: unless-stopped
+    volumes:
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../../enterprise:/mnt/enterprise:ro
+      - ./addons:/mnt/custom-addons
+      - demo_data:/var/lib/odoo
+      - demo_web:/var/lib/odoo/filestore
+    networks:
+      - openvoo_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.demo.rule=Host(`demo.openvoo.com`)"
+      - "traefik.http.routers.demo.entrypoints=websecure"
+      - "traefik.http.routers.demo.tls.certresolver=letsencrypt"
+      - "traefik.http.services.demo.loadbalancer.server.port=8069"
+      - "traefik.http.routers.demo-lp.rule=Host(`demo.openvoo.com`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.demo-lp.entrypoints=websecure"
+      - "traefik.http.routers.demo-lp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.demo-lp.loadbalancer.server.port=8072"

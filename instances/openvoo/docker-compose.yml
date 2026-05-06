@@ -1,0 +1,39 @@
+# ============================================
+# Instancia: OpenVoo (produccion)
+# Dominio: openvoo.com
+# ============================================
+
+networks:
+  openvoo_network:
+    external: true
+
+volumes:
+  openvoo_data:
+  openvoo_web:
+
+services:
+  openvoo:
+    image: odoo:19.0
+    container_name: openvoo
+    restart: unless-stopped
+    volumes:
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../../enterprise:/mnt/enterprise:ro
+      - ./addons:/mnt/custom-addons
+      - openvoo_data:/var/lib/odoo
+      - openvoo_web:/var/lib/odoo/filestore
+    networks:
+      - openvoo_network
+    labels:
+      - "traefik.enable=true"
+      # HTTP router
+      - "traefik.http.routers.openvoo.rule=Host(`openvoo.com`)"
+      - "traefik.http.routers.openvoo.entrypoints=websecure"
+      - "traefik.http.routers.openvoo.tls.certresolver=letsencrypt"
+      # Servicio
+      - "traefik.http.services.openvoo.loadbalancer.server.port=8069"
+      # Longpolling (chat en vivo, notificaciones)
+      - "traefik.http.routers.openvoo-lp.rule=Host(`openvoo.com`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.openvoo-lp.entrypoints=websecure"
+      - "traefik.http.routers.openvoo-lp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.openvoo-lp.loadbalancer.server.port=8072"

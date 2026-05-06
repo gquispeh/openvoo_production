@@ -1,0 +1,12 @@
+# Passwords y configuracion local
+.env
+
+# Certificados SSL
+traefik/acme.json
+
+# Modulos enterprise (repo privado, se clona aparte)
+enterprise/
+
+# Addons compilados
+*.pyc
+__pycache__/

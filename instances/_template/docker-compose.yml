@@ -1,0 +1,36 @@
+# ============================================
+# Instancia: NOMBRE_CLIENTE
+# Dominio: NOMBRE_CLIENTE.openvoo.com
+# ============================================
+
+networks:
+  openvoo_network:
+    external: true
+
+volumes:
+  NOMBRE_CLIENTE_data:
+  NOMBRE_CLIENTE_web:
+
+services:
+  NOMBRE_CLIENTE:
+    image: odoo:19.0
+    container_name: NOMBRE_CLIENTE
+    restart: unless-stopped
+    volumes:
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../../enterprise:/mnt/enterprise:ro
+      - ./addons:/mnt/custom-addons
+      - NOMBRE_CLIENTE_data:/var/lib/odoo
+      - NOMBRE_CLIENTE_web:/var/lib/odoo/filestore
+    networks:
+      - openvoo_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.NOMBRE_CLIENTE.rule=Host(`NOMBRE_CLIENTE.openvoo.com`)"
+      - "traefik.http.routers.NOMBRE_CLIENTE.entrypoints=websecure"
+      - "traefik.http.routers.NOMBRE_CLIENTE.tls.certresolver=letsencrypt"
+      - "traefik.http.services.NOMBRE_CLIENTE.loadbalancer.server.port=8069"
+      - "traefik.http.routers.NOMBRE_CLIENTE-lp.rule=Host(`NOMBRE_CLIENTE.openvoo.com`) && PathPrefix(`/websocket`)"
+      - "traefik.http.routers.NOMBRE_CLIENTE-lp.entrypoints=websecure"
+      - "traefik.http.routers.NOMBRE_CLIENTE-lp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.NOMBRE_CLIENTE-lp.loadbalancer.server.port=8072"
