@@ -21,7 +21,6 @@ services:
       - PORT=5432
       - USER=${POSTGRES_USER}
       - PASSWORD=${POSTGRES_PASSWORD}
-    command: ["--admin_passwd", "${ODOO_MASTER_PASSWORD}"]
     volumes:
       - ./odoo.conf:/etc/odoo/odoo.conf:ro
       - ../../enterprise:/mnt/enterprise:ro
